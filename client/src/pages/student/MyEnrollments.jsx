@@ -40,7 +40,8 @@ const MyEnrollments = () => {
             </tr>
           </thead>
           <tbody className='text-gray-700'>
-            {enrolledCourses.map((course,index)=>(
+          
+            { enrolledCourses && enrolledCourses.length > 0 ? enrolledCourses.map((course,index)=>(
               <tr key={index} className='border-b border-gray-500/20'>
                 <td className='md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3'>
                   <img src={course.courseThumbnail}  alt="" className='w-14 sm:w-24 md:w-28'/>
@@ -62,7 +63,11 @@ const MyEnrollments = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            )) :  (
+              <tr>
+                <td colSpan={4} className="text-center py-5 text-gray-500">No courses enrolled yet.</td>
+              </tr>
+            )}
           </tbody>
         </table>
     </div>
