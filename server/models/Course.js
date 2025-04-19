@@ -5,8 +5,7 @@ const lectureSchema = new mongoose.Schema({
     lectureTitle: {type: String, required: true},
     lectureDuration:{type:Number, required: true},
     lectureUrl:{type: String, required: true},
-    lectureDescription:{type: String, required: true},
-    isPreview:{type: Boolean, default: true},
+    isPreviewFree:{type: Boolean, default: true},
     lectureOrder:{type: Number, required: true},
 },{_id:false});
 
@@ -24,7 +23,7 @@ const courseSchema = new mongoose.Schema({
     coursePrice : {type: Number, required: true},
     isPublished : {type: Boolean, default: true},
     discount : {type: Number, required: true,min:0,max:100},
-    courseContent :[],
+    courseContent :[chapterSchema],
     courseRating:[
         {userId:{type:String},rating : {type:Number, min:1,max:5}},
     ],

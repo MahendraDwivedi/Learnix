@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useClerk,UserButton , useUser } from '@clerk/clerk-react'
 import { AppContext } from '../../context/AppContext'
 import { toast } from 'react-toastify'
+import axios   from 'axios'
 
 const Navbar = () => {
 
@@ -19,8 +20,8 @@ const Navbar = () => {
         navigate('/educator')
         return ;
       }
-      const token = await getToken()
-      const {data} = await axios.post(backendUrl+`/api/educator/update-role`,{
+      const token = await getToken();
+      const {data} = await axios.get(backendUrl+`/api/educator/update-role`,{
         headers:{
           Authorization : `Bearer ${token}`
         }

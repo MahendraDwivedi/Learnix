@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import uniqid from'uniqid';
 import Quill from 'quill';
 import { assets } from '../../assets/assets';
-
-
+import {AppContext} from '../../context/AppContext';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 const AddCourse = () => {
+
+  const {backendUrl,getToken} = useContext(AppContext);
 
   const quillRef = useRef(null);
   const editorRef = useRef(null);
@@ -33,9 +36,9 @@ const AddCourse = () => {
         const newChapter = {
           chapterId : uniqid(),
           chapterTitle : title ,
-          chapterContent : [],
+          chapterConter : [],
           collapsed:false,
-          chapterOrder : chapters.length>0 ? chapterId.slice(-1)[0].chapterOrder+1:1
+          chapterOrder : chapters.length>0 ? chapters.slice(-1)[0].chapterOrder+1:1
         };
         setChapters([...chapters,newChapter]);
       }
@@ -57,7 +60,7 @@ const AddCourse = () => {
       setChapters(
         chapters.map((chapter) => {
           if(chapter.chapterId === chapterId){
-            chapter.chapterContent.splice(lectureIndex,1);
+            chapter.chapterConter.splice(lectureIndex,1);
           }
           return chapter;
         })
@@ -71,10 +74,10 @@ const AddCourse = () => {
         if(chapter.chapterId === currentChapterId){
           const newLecture = {
             ...lectureDetails,
-            lectureOrder : chapter.chapterContent.length >0 ? chapter.chapterContent.slice(-1)[0].lectureOrder + 1 :1,
+            lectureOrder : chapter.chapterConter.length >0 ? chapter.chapterConter.slice(-1)[0].lectureOrder + 1 :1,
             lectureId : uniqid()
           };
-          chapter.chapterContent.push(newLecture);
+          chapter.chapterConter.push(newLecture);
         }
         return chapter;
       })
@@ -90,7 +93,45 @@ const AddCourse = () => {
 
   
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    try {
+      e.preventDefault()
+      if(!image){
+        toast.error('Please upload a thumbnail image');
+      }
+
+      const courseData = {
+        courseTitle,
+        courseDescription: quillRef.current.root.innerHTML,
+        coursePrice:Number(coursePrice),
+        discount:Number(discount),
+        courseContent:chapters,
+      }
+
+      const formData = new FormData();
+
+      formData.append('courseData',JSON.stringify(courseData));
+      formData.append('image',image);
+
+      const token = await getToken();
+      const {data} = await axios.post(backendUrl+'/api/educator/add-course',formData,{headers:{Authorization:`Bearer ${token}`}});
+      console.log(data)
+      if(data.success){
+        toast.success(data.message);
+        setCourseTitle('');
+        setCoursePrice(0);
+        setDiscount(0);
+        setChapters([]);
+        setImage(null);
+        
+        
+        quillRef.current.root.innerHTML = '';
+      }
+      else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   useEffect(()=>{
@@ -143,13 +184,13 @@ const AddCourse = () => {
                   <img onClick={() => handleChapter('toggle',chapter.chapterId)} src={assets.dropdown_icon} width={14} alt="" className={`mr-2 cursor-pointer transition-all ${chapter.collapsed && "-rotate-90"}`} />
                   <span className='font-semibold'>{chapterIndex +1 }{chapter.chapterTitle}</span>
                 </div>
-                <span className='text-gray-500'>{chapter.chapterContent.length}Lectures</span>
+                <span className='text-gray-500'>{chapter.chapterConter.length}Lectures</span>
                 <img onClick={() => handleChapter('remove',chapter.chapterId)} src={assets.cross_icon} alt="" className='cursor-pointer' />
               </div>
               {
                 !chapter.collapsed && (
                   <div className='p-4'>
-                    {chapter.chapterContent.map((lecture , lectureIndex)=>(
+                    {chapter.chapterConter.map((lecture , lectureIndex)=>(
                       <div key={lectureIndex} className='flex justify-between items-center mb-2'>
                         <span>{lectureIndex+1}{lecture.lectureTitle} - {lecture.lectureDuration} mins - <a href={lecture.lectureUrl} target='_blank' className='text-blue-500'>Link</a> - {lecture.isPreviewFree ? 'Free Preview' : 'Paid'} </span>
                         <img onClick={()=>handleLecture('remove',chapter.chapterId,lectureIndex )} src={assets.cross_icon} alt="" className='cursor-pointer'/>

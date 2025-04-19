@@ -21,7 +21,7 @@ export const getCourseId = async (req, res) => {
         
         // remove lectureUrl if isPreviewFree is false
         courseData.courseContent.forEach((chapter) => {
-            chapter.chapterContent.forEach((lecture) => {
+            chapter.chapterConter.forEach((lecture) => {
                 if (!lecture.isPreviewFree) {
                     lecture.lectureUrl = "";
                 }

@@ -1,10 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from 'humanize-duration'
 import {useAuth , useUser} from '@clerk/clerk-react'
-import axios from 'axios'
 import { toast } from "react-toastify";
+import axios from "axios";
 //
 export const AppContext = createContext();
 
@@ -17,8 +16,8 @@ export const AppContextProvider = (props)=>{
     const {user} = useUser()
 
     const [allCourses , setAllCourses] = useState([])
-    const [isEducator , setIsEducator] = useState(true)
-    const [enrolledCourses , setEnrolledCourses] = useState(true)
+    const [isEducator , setIsEducator] = useState(false)
+    const [enrolledCourses , setEnrolledCourses] = useState([])
     const [userData, setUserData] = useState(null)
 
     //fetch all courses
@@ -31,6 +30,7 @@ export const AppContextProvider = (props)=>{
             }
             else {
                 toast.error(data.message)
+                
             }
         } catch (error) {
             toast.error(error.message)
@@ -43,19 +43,23 @@ export const AppContextProvider = (props)=>{
             setIsEducator(true)
         }
         try {
-            const token = await getToken()
+            const token = await getToken();
             console.log(token)
             const {data} = await axios.get(backendUrl+`/api/user/data`,{
                 headers:{
                     Authorization : `Bearer ${token}`
                 }
             })
+            console.log(enrolledCourses);
+            
             if(data.success){
                 setUserData(data.user)
             }
             else{
                 toast.error(data.message)
             }
+            
+            
         } catch (error) {
             toast.error(error.message)
         }
@@ -78,14 +82,14 @@ export const AppContextProvider = (props)=>{
 
     const calculateChapterTime = (chapter)=>{
         let time = 0
-        chapter.chapterContent.map((lecture)=>time += lecture.lectureDuration)
+        chapter.chapterConter.map((lecture)=>time += lecture.lectureDuration)
         return humanizeDuration(time*60*1000 , {units : ['h','m']})
     }
 
     //funtion to cal the courseDuration
     const calculateCourseDuration = (course)=>{
         let time = 0
-        course.courseContent.map((chapter)=> chapter.chapterContent.map(
+        course.courseContent.map((chapter)=> chapter.chapterConter.map(
             (lecture) => time+=lecture.lectureDuration
         ))
         return humanizeDuration(time*60*1000 , {units : ['h','m']})
@@ -97,8 +101,8 @@ export const AppContextProvider = (props)=>{
     const calculateNoOfLectures = (course)=>{
         let totalLectures = 0;
         course.courseContent.forEach(chapter => {
-            if(Array.isArray(chapter.chapterContent)){
-                totalLectures += chapter.chapterContent.length
+            if(Array.isArray(chapter.chapterConter)){
+                totalLectures += chapter.chapterConter.length
             }
         });
         return totalLectures;
@@ -107,13 +111,16 @@ export const AppContextProvider = (props)=>{
     //fetch uset enrolled courses
     const fetchUserEnrolledCourses = async()=>{
         try {
-            const token = await getToken()
+            const token = await getToken();
             const {data} = await axios.get(backendUrl+`/api/user/enrolled-courses`,{
                 headers:{
                     Authorization : `Bearer ${token}`
                 }
             })
+            
+            
             if(data.success){
+                
                 setEnrolledCourses(data.enrolledCourses)
             }
             else{
