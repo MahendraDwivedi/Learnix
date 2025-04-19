@@ -89,9 +89,11 @@ export const stripeWebhooks = async (req, res) => {
 
       courseData.enrolledStudents.push(userData);
       await courseData.save();
+      console.log(courseData);
 
       userData.enrolledCourses.push(courseData._id);
       await userData.save();
+      
 
       purchaseData.status = 'completed';
       await purchaseData.save();
@@ -117,5 +119,5 @@ export const stripeWebhooks = async (req, res) => {
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  res.status(200).json({ received: true });
+  res.json({ received: true });
 };
