@@ -15,6 +15,6 @@ const courseProgressSchema = new mongoose.Schema({
     },
     lectureCompleted: []
 
-}, { timestamps: true });
+}, { minimize: false });
 
 export const CourseProgress = mongoose.model('CourseProgress', courseProgressSchema);

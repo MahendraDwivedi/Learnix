@@ -98,6 +98,7 @@ export const updateUserCourseProgress = async (req, res) => {
             if(progressData.lectureCompleted.includes(lectureId)){
                 return res.json({success:true, message: "Lecture already completed" });
             }
+
             progressData.lectureCompleted.push(lectureId);
             await progressData.save();
         }else {
@@ -148,7 +149,7 @@ export const addUserRatings = async (req, res) => {
         if(!user || !user.enrolledCourses.includes(courseId)){
             return res.json({success:false, message: "User has not purchased the course" });
         }
-        const existingRatingIndex = course.courseRatings.findIndex(r => r.userId === userId);
+        const existingRatingIndex = course.courseRating.findIndex(r => r.userId === userId);
         if(existingRatingIndex > -1){
             course.courseRating[existingRatingIndex].rating = rating;
         }
