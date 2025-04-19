@@ -6,7 +6,9 @@ const Footer = () => {
     <footer className='bg-gray-900 md:px-36 text-left w-full mt-10'>
       <div className='flex flex-col md:flex-row items-start px-8 md:px-0 justify-center gap-10 md:gap-32 py-10 border-b border-white/30 '>
         <div className='flex flex-col md:items-start items-center w-full'>
-          <img src={assets.logo_dark} alt="logo" />
+          {/* <img src={assets.logo_dark} alt="logo" /> */}
+          <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 cursor-pointer'>MDemy</h1>
+
           <p className='mt-6 text-center md:text-left text-sm text-white/80'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus animi minus, neque maiores rem harum corrupti eos quas accusamus corporis.</p>
         </div>
         <div className='flex flex-col md:items-start items-center w-full'>
@@ -27,7 +29,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <p className='py-4 text-center text-xs md:text-sm text-white/60'>Copyright 2025 @ EduStack. All Right Reserved.</p>
+      <p className='py-4 text-center text-xs md:text-sm text-white/60'>Copyright 2025 @ Mahendra Dwivedi. All Right Reserved. </p>
     </footer>
   )
 }
