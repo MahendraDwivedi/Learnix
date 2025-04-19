@@ -57,7 +57,10 @@ export const clerkWebhooks = async (req, res) => {
 
 
 const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY)
+
 export const stripeWebhooks = async (req, res) => {
+  console.log("Stripe webhook hit"); // Add this
+
   const sig = req.headers['stripe-signature'];
   let event;
 
@@ -87,7 +90,7 @@ export const stripeWebhooks = async (req, res) => {
       courseData.enrolledStudents.push(userData);
       await courseData.save();
 
-      userData.enrolledStudents.push(courseData._id);
+      userData.enrolledCourses.push(courseData._id);
       await userData.save();
 
       purchaseData.status = 'completed';
@@ -114,5 +117,5 @@ export const stripeWebhooks = async (req, res) => {
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  res.status(200).json({ received: true });
+  res.json({ received: true });
 };
