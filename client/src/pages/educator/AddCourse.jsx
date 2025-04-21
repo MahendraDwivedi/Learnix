@@ -92,47 +92,55 @@ const AddCourse = () => {
   }
 
   
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault()
-      if(!image){
-        toast.error('Please upload a thumbnail image');
-      }
+const handleSubmit = async (e) => {
+  try {
+    e.preventDefault();
 
-      const courseData = {
-        courseTitle,
-        courseDescription: quillRef.current.root.innerHTML,
-        coursePrice:Number(coursePrice),
-        discount:Number(discount),
-        courseContent:chapters,
-      }
-
-      const formData = new FormData();
-
-      formData.append('courseData',JSON.stringify(courseData));
-      formData.append('image',image);
-
-      const token = await getToken();
-      const {data} = await axios.post(backendUrl+'/api/educator/add-course',formData,{headers:{Authorization:`Bearer ${token}`}});
-      console.log(data)
-      if(data.success){
-        toast.success(data.message);
-        setCourseTitle('');
-        setCoursePrice(0);
-        setDiscount(0);
-        setChapters([]);
-        setImage(null);
-        
-        
-        quillRef.current.root.innerHTML = '';
-      }
-      else{
-        toast.error(data.message)
-      }
-    } catch (error) {
-      toast.error(error.message)
+    if (!image) {
+      toast.error('Please upload a thumbnail image');
+      return;
     }
+
+    if (Number(coursePrice) > 100000) {
+      toast.error('Course price exceeds the allowed maximum of $100,000');
+      return;
+    }
+
+    const courseData = {
+      courseTitle,
+      courseDescription: quillRef.current.root.innerHTML,
+      coursePrice: Number(coursePrice),
+      discount: Number(discount),
+      courseContent: chapters,
+    };
+
+    const formData = new FormData();
+    formData.append('courseData', JSON.stringify(courseData));
+    formData.append('image', image);
+
+    const token = await getToken();
+    const { data } = await axios.post(
+      backendUrl + '/api/educator/add-course',
+      formData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (data.success) {
+      toast.success(data.message);
+      setCourseTitle('');
+      setCoursePrice(0);
+      setDiscount(0);
+      setChapters([]);
+      setImage(null);
+      quillRef.current.root.innerHTML = '';
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error(error.message);
   }
+};
+
 
   useEffect(()=>{
     //initate quill only once
