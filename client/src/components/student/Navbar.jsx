@@ -44,10 +44,13 @@ const Navbar = () => {
         <h1 onClick={()=> navigate('/')} className='text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 cursor-pointer'>Learnix</h1>
         <div className='hidden md:flex items-center gap-5 text-grey-500'>
           <div className='flex items-center gap-5'>
-            { user &&  
+            { user &&!isAdmin &&  
              <>
-              <button onClick={becomeEducator}>{isEducator ? 'Educator DashBoard ':'Become Educator'} </button>
-             | <Link to='/my-enrollments'>My Enrollments</Link> |
+              {<button onClick={becomeEducator}> {isEducator ? 'Educator DashBoard ':'Become Educator'} </button>}
+             | <Link to='/my-enrollments'>My Enrollments</Link>
+             </>
+             }
+             <>
              {isAdmin && (
           <Link
             to="/admin"
@@ -55,9 +58,8 @@ const Navbar = () => {
           >
             Admin Dashboard
           </Link>
-        )} 
+        )}
              </>
-             }
           </div>
           { user ? <UserButton/> :
             <button onClick={()=> openSignIn()} className='bg-blue-600 text-white px-5 py-2 rounded-full'>Create Account</button>}        </div>
