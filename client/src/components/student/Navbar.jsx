@@ -12,8 +12,8 @@ const Navbar = () => {
   const isCourseListPage = location.pathname.includes('/course-list');
   
   const {openSignIn} = useClerk();
-  const {user} = useUser();
-   
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.role === "admin";
   const becomeEducator = async()=>{
     try {
       if(isEducator){
@@ -41,13 +41,21 @@ const Navbar = () => {
   return (
     <div className={`flex items-center justify-between px-4 sm:px-10 md:px-14 lg:px-26 border-b border-gray-500 py-4 ${isCourseListPage ? 'bg-white' : 'bg-blue-100/70'}`}>
         {/* <img onClick={()=> navigate('/')} src="{assets.logo}" alt="Logo" className='w-28 lg:w-32 cursor-pointer'/> */}
-        <h1 onClick={()=> navigate('/')} className='text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 cursor-pointer'>MDemy</h1>
+        <h1 onClick={()=> navigate('/')} className='text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 cursor-pointer'>Learnix</h1>
         <div className='hidden md:flex items-center gap-5 text-grey-500'>
           <div className='flex items-center gap-5'>
             { user &&  
              <>
               <button onClick={becomeEducator}>{isEducator ? 'Educator DashBoard ':'Become Educator'} </button>
-             | <Link to='/my-enrollments'>My Enrollments</Link> 
+             | <Link to='/my-enrollments'>My Enrollments</Link> |
+             {isAdmin && (
+          <Link
+            to="/admin"
+            className="text-sm px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Admin Dashboard
+          </Link>
+        )} 
              </>
              }
           </div>
@@ -63,7 +71,9 @@ const Navbar = () => {
               <button onClick={becomeEducator}>{isEducator ? 'Educator DashBoard ':'Become Educator'} </button>  
              | <Link to='/my-enrollments'>My Enrollments</Link> 
              </>
-             }
+          }
+           {/* Show Admin button only if user is admin */}
+        
           </div>
           {
             user ? <UserButton/> : <button onClick={()=> openSignIn()}><img src={assets.user_icon}  alt="" /></button>
