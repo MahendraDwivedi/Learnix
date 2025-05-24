@@ -189,6 +189,8 @@
         </section>
 
         {/* Section: Users Management */}
+        <h1 className="text-4xl font-extrabold mb-10 text-center text-blue-900 dark:text-white tracking-tight">User <span className="mx-5">  Detail</span></h1>
+
         <section className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow mb-10">
           <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Users </h2>
