@@ -51,11 +51,11 @@ const StudentsEnrolled = () => {
       <td className='px-4 py-3 text-center hidden sm:table-cell'>{index + 1}</td>
       <td className='md:px-4 px-2 py-3 flex items-center space-x-3'>
         {/* If needed, you can also show image:  */}
-        <img src={item.student?.imageUrl} alt="" className='w-9 h-9 rounded-full' />
-        <span className='truncate'>{item.student?.name || 'Unknown Student'}</span>
+        <img src={item.student?.imageUrl} alt="" className='w-9 h-9 rounded-full hidden sm:block' />
+        <span className='break-words whitespace-normal max-w-[150px]'>{item.student?.name || 'Unknown Student'}</span>
       </td>
-      <td className='px-4 py-3 truncate'>{item.courseTitle}</td>
-      <td className='px-4 py-3 hidden sm:table-cell'>
+      <td className='px-4 py-3 break-words whitespace-normal max-w-[150px]'>{item.courseTitle}</td>
+      <td className='px-4 py-3 '>
         {new Date(item.purchaseDate).toLocaleDateString()}
       </td>
     </tr>
