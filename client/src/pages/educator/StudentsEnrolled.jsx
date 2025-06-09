@@ -13,7 +13,7 @@ const StudentsEnrolled = () => {
   const fetchEnrolledStudents = async ()=>{
     try {
       const token = await getToken()
-      const {data} = await axios.get(backendUrl+'/api/educator/enrolled-students',{headers:{Authorization:`Bearer ${token}`}})      
+      const {data} = await axios.get(backendUrl+'/api/educator/enrolled-students',{headers:{Authorization:`Bearer ${token}`}})    
       if(data.success){
         
         setStudentsEnrolled(data.enrolledStudentsData.reverse())
@@ -46,20 +46,21 @@ const StudentsEnrolled = () => {
           </thead>
 
           <tbody>
-            {enrolledStudents.map((item,index) => (
-              <tr key={index} className='border-b border-gray-500/20'>
-                <td className='px-4 py-3 text-center hidden sm:table-cell'>{index+1}</td>
-                <td className='md:px-4 px-2 py-3 flex items-center space-x-3'>
-                  <img src={item.student.imageUrl} alt="" className='w-9 h-9 rounded-full'/>
-                  <span className='truncate'>{item.student.name}</span>
-                </td>
-                <td className='px-4 py-3 truncate' >{item.courseTitle}</td>
-                <td className='px-4 py-3 hidden sm:table-cell'>
-                      {new Date(item.purchaseDate).toLocaleDateString()}
-                    </td>
-              </tr>
-            ))}
-          </tbody>
+  {enrolledStudents.map((item,index) => (
+    <tr key={index} className='border-b border-gray-500/20'>
+      <td className='px-4 py-3 text-center hidden sm:table-cell'>{index + 1}</td>
+      <td className='md:px-4 px-2 py-3 flex items-center space-x-3'>
+        {/* If needed, you can also show image: <img src={item.student?.imageUrl} alt="" className='w-9 h-9 rounded-full' /> */}
+        <span className='truncate'>{item.student?.name || 'Unknown Student'}</span>
+      </td>
+      <td className='px-4 py-3 truncate'>{item.courseTitle}</td>
+      <td className='px-4 py-3 hidden sm:table-cell'>
+        {new Date(item.purchaseDate).toLocaleDateString()}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
        </div>
     </div>

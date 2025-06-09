@@ -191,3 +191,73 @@ export const getDashboardStats = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+export const monthlyData = async (req, res) => {
+  try {
+    const userId = req.headers["x-clerk-user-id"];
+    if (!userId) {
+     return res.status(400).json({ success: false, message: "No user ID provided" });
+    }
+
+     const stats = await Purchase.aggregate([
+      {
+        $match: {
+          status: "completed", // Only successful purchases
+          createdAt: {
+            $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)), // last 6 months
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$createdAt" },
+            year: { $year: "$createdAt" },
+          },
+          totalEnrollments: { $sum: 1 },
+          uniqueStudents: { $addToSet: "$userId" },
+        },
+      },
+      {
+        $project: {
+          month: "$_id.month",
+          year: "$_id.year",
+          totalEnrollments: 1,
+          studentCount: { $size: "$uniqueStudents" },
+          _id: 0,
+        },
+      },
+      { $sort: { year: 1, month: 1 } },
+    ]);
+
+    console.log(stats);
+    
+    res.status(200).json({ stats });
+  } catch (error) {
+    console.error(error);
+    console.log("some error occured");
+    
+    res.status(500).json({ error: "Failed to fetch enrollment stats" });
+  }
+}
+
+export const updateCourse = async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  try {
+    const updatedCourse = await Course.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedCourse) {
+      return res.status(404).json({ success: false, message: "Course not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Course updated", course: updatedCourse });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

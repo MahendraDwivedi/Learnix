@@ -3,9 +3,10 @@ import {
   getAllCourses,
   getCourseId,
   getDashboardStats,
-  deleteCourse
+  deleteCourse,
+  updateCourse
 } from "../controllers/courseControlle.js";
-import { verifyAdmin } from "../middlewares/authMiddleware.js";
+import { verifyAdmin, verifyEducatorOrAdmin } from "../middlewares/authMiddleware.js";
 
 const courseRouter = express.Router();
 
@@ -20,5 +21,8 @@ courseRouter.delete('/:id', verifyAdmin, deleteCourse);
 
 // ADMIN dashboard stats
 courseRouter.get('/admin/stats', verifyAdmin, getDashboardStats);
+
+courseRouter.put('/:id', verifyEducatorOrAdmin, updateCourse);
+
 
 export default courseRouter;
